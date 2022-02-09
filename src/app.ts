@@ -9,6 +9,8 @@ const PORT = config.get<number>('PORT');
 
 const app = express();
 
+app.use(express.json());
+
 app.listen(PORT, async ()=>{
     logger.info(`running on ${PORT}`);
     await connect();

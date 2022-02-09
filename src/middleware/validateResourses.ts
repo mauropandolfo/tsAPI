@@ -8,6 +8,7 @@ const validate = ( schema: AnyZodObject ) =>( req: Request, res: Response, next:
             query: req.query,
             params: req.params
         });
+        next();
     }
     catch(err: any){
         return res.status(400).send(err.errors);

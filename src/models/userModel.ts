@@ -7,7 +7,6 @@ export interface UserInput {
     name: string;
     password: string;
 }
-
 export interface UserDocument extends UserInput, mongoose.Document {
     createdAt: Date;
     updatedAt: Date;
@@ -35,7 +34,8 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-userSchema.pre("save", async function (next) {
+//ENCRYPT PASSWORD
+userSchema.pre("save", async function (next){
     let user = this as UserDocument;
     if (!user.isModified("password")) return next();
     const salt = await bcrypt.genSalt(config.get<number>("saltWorkFactor"));
@@ -43,8 +43,8 @@ userSchema.pre("save", async function (next) {
     user.password = hash;
     return next();
 });
-
-userSchema.methods.comparePassword = async function (candidatePassword: string):Promise<boolean> {
+//COMPARE USER PASSWORD W/ENCRYPTED PASSWORD
+userSchema.methods.comparePassword = async function (candidatePassword: string):Promise<boolean>{
     const user = this as UserDocument;
     return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
 };
